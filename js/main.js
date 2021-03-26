@@ -278,3 +278,53 @@ navigationLink.forEach(link => {
 		
 	})
 });
+
+// form
+
+const modalForm = document.querySelector('.modal-form');
+const modal = document.querySelector('.modal');
+const inputName = modalForm.querySelector('[placeholder="Имя"]');
+const inputPhone = modalForm.querySelector('[placeholder="Телефон"]');
+
+const postData = dataUser => fetch('server.php', {
+	method: 'POST',
+	body: dataUser,
+});
+
+inputPhone.addEventListener('input',() => {
+	inputPhone.value = inputPhone.value.replace(/[^0-9]/,  '')
+});
+
+modalCart.addEventListener('submit', event => {
+	event.preventDefault();
+	
+		if (inputName.value.trim() === '' || inputPhone.value === '') {
+			alert('Пожалуйста заполните форму');
+		} else if (cart.cartGoods.length === 0) {
+			alert('Корзина пустая!');
+		} else {
+			const formData = new FormData(modalForm);
+			formData.append('cart', JSON.stringify(cart.cartGoods));
+
+			postData(formData)
+			.then(response => {
+				if(!response.ok) {
+					throw new Error(response.status);
+				}
+				alert('Спасибо мы скоро с Вами свяжемся!');
+			})
+			.catch(error => {
+				console.error(error);
+				alert('Ошибка, повторите попытку позже!');
+			})
+			.finally(() => {
+					closeModal();
+					modalForm.reset();
+					cart.cartGoods.length = 0;
+					cartCount.textContent = '';
+			});
+		}
+		
+
+	
+});
