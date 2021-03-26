@@ -56,9 +56,6 @@ const getGoods = async function () {
 
 const cart = {
 	cartGoods: [],
-	changeCartCount() {
-		cartCount.textContent = this.cartGoods.length;
-	},
 	renderCart(){
 		cartTableGoods.textContent = '';
 		this.cartGoods.forEach(({id, name, price, count}) => {
@@ -82,12 +79,16 @@ const cart = {
 		}, 0);
 
 		cartTableTotal.textContent = totalPrice + '$';
+		const totalItems = this.cartGoods.reduce( (sum,item) => sum + item.count,0);
+		cartCount.textContent = totalItems;
+		if (totalItems === 0) {
+			cartCount.textContent = '';
+		}
 		
 	},
 	deleteGood(id){
 		this.cartGoods = this.cartGoods.filter(item => id !== item.id);
 		this.renderCart();
-		this.addCartCount(this.cartGoods.length);
 	},
 	minusGood(id){
 		for(const item of this.cartGoods) {
@@ -125,20 +126,14 @@ const cart = {
 					price,
 					count: 1,
 				});
-				this.addCartCount(this.cartGoods.length);
+				this.renderCart();
 			});
-		}
-	},
-	addCartCount(count) {
-		cartCount.textContent = count;
-		if (count === 0) {
-			cartCount.textContent = '';
 		}
 	},
 	clearCard() {
 		this.cartGoods = [];
 		this.renderCart();
-		this.addCartCount(this.cartGoods.length);
+
 	}
 };
 
